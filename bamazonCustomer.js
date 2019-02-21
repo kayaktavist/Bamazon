@@ -11,6 +11,7 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
+    view();
     menu();
 });
 
@@ -35,7 +36,7 @@ function menu() {
                 // console.log(res[0].stock_quantity);
 
                 if (res[0].stock_quantity < answer.quantity) {
-                    console.log("We're sorry, there are only " + res[0].stock_quantity + " of this item left in stock. \n\nWe'll return you to the main catalogue menu. \n\n ============================ \n");
+                    console.log("\nWe're sorry, there are only " + res[0].stock_quantity + " of this item left in stock. \n\nWe'll return you to the main catalogue menu. \n\n ============================ \n");
                     console.log()
                     menu();
                 }
@@ -62,4 +63,12 @@ function menu() {
                 };
             });
         });
+};
+function view() {
+    var query = "SELECT * FROM products";
+    connection.query(query, function (err, res) {
+        console.table(res);
+       
+    });
+
 };

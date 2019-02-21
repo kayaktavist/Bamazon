@@ -1,23 +1,3 @@
-// Create a new Node application called `bamazonManager.js`. Running this application will:
-
-//   * List a set of menu options:
-
-//     * View Products for Sale
-
-//     * View Low Inventory
-
-//     * Add to Inventory
-
-//     * Add New Product
-
-//   * If a manager selects `View Products for Sale`, the app should list every available item: the item IDs, names, prices, and quantities.
-
-//   * If a manager selects `View Low Inventory`, then it should list all items with an inventory count lower than five.
-
-//   * If a manager selects `Add to Inventory`, your app should display a prompt that will let the manager "add more" of any item currently in the store.
-
-//   * If a manager selects `Add New Product`, it should allow the manager to add a completely new product to the store.
-
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 
@@ -75,16 +55,19 @@ function menu() {
 function view() {
     var query = "SELECT * FROM products";
     connection.query(query, function (err, res) {
+        console.log("\n")
         console.table(res);
-       
+        console.log("\n")
     });
-
+    menu();
 };
 
 function lowStock() {
     var query = "SELECT * FROM products WHERE stock_quantity < 20";
     connection.query(query, function (err, res) {
+        console.log("\n")
         console.table(res);
+        console.log("\n")
         menu();
     });
 };
@@ -92,8 +75,9 @@ function lowStock() {
 function addStock() {
     var query = "SELECT * FROM products";
     connection.query(query, function (err, res) {
-        view();
+        console.log("\n")
         console.table(res);
+        console.log("\n")
         inquirer
             .prompt([
                 {
@@ -126,10 +110,15 @@ function addStock() {
                     },
                     {
                         product_name: answer.item
-                    }
-                ]);
-                view();
-                menu();
+                    },
+                    
+                ],function (err) {
+                    if (err) throw err;
+                    console.log("\n");
+                    console.log("Your product was updated successfully!");
+                    console.log("\n");
+                    view();
+                });
             });
     });
 };
@@ -165,13 +154,13 @@ function newProduct() {
                     department_name: answer.department,
                     price: answer.price,
                     stock_quantity: answer.quantity
-                },
-                function (err) {
-                    if (err) throw err;
-                    console.log("Your product was created successfully!");
-                }
-            ]);
-            view();
-            menu();
+                },      
+            ], function (err) {
+                if (err) throw err;
+                console.log("\n")
+                console.log("Your product was created successfully!");
+                console.log("\n")
+                view();
+            }); 
         });
 };
